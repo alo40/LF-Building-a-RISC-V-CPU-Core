@@ -1,3 +1,7 @@
+Update 06.08.2022: I have just clone this repo for the edX course: 
+LinuxFoundationX LFD111x Building a RISC-V CPU Core 
+Many thanks to all that make this excelent course possible, specially Steve Hoovers! 
+
 # Building a RISC-V CPU Core
 
 Accompanying resources for the [Building a RISC-V CPU Core](https://www.edx.org/course/building-a-risc-v-cpu-core) [EdX](https://edx.org/) course by [Steve Hoover](https://www.linkedin.com/in/steve-hoover-a44b607/) of [Redwood EDA, LLC](https://redwoodeda.com), [Linux Foundation](https://www.linuxfoundation.org/), and [RISC-V International](https://riscv.org).
