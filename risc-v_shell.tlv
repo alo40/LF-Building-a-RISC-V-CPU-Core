@@ -49,6 +49,10 @@
    // Instruction Memory
    `READONLY_MEM($pc, $$instr[31:0]) // instantiation
    
+   // Decoder, opcode[6:2]
+   // This comment is exclusively for testing branch
+   
+   
    // Assert these to end simulation (before Makerchip cycle limit).
    *passed = 1'b0;
    *failed = *cyc_cnt > M4_MAX_CYC;
