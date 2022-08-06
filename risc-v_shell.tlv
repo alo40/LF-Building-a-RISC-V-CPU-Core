@@ -50,7 +50,22 @@
    `READONLY_MEM($pc, $$instr[31:0]) // instantiation
    
    // Decoder, opcode[6:2]
-   // This comment is exclusively for testing branch
+   $is_x_instr = $instr[1:0] == 2'b11;
+   $is_u_instr = $instr[6:2] == 5'b00101 || 
+                 $instr[6:2] == 5'b01101;
+   $is_i_instr = $instr[6:2] == 5'b00000 || 
+                 $instr[6:2] == 5'b00001 || 
+                 $instr[6:2] == 5'b00100 || 
+                 $instr[6:2] == 5'b00110 || 
+                 $instr[6:2] == 5'b11001;
+   $is_s_instr = $instr[6:2] == 5'b01000 || 
+                 $instr[6:2] == 5'b01001;
+   $is_r_instr = $instr[6:2] == 5'b01011 || 
+                 $instr[6:2] == 5'b01100 || 
+                 $instr[6:2] == 5'b01110 || 
+                 $instr[6:2] == 5'b10100;
+   $is_b_instr = $instr[6:2] == 5'b11000;
+   $is_j_instr = $instr[6:2] == 5'b11011;
    
    
    // Assert these to end simulation (before Makerchip cycle limit).
