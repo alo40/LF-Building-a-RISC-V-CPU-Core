@@ -743,7 +743,7 @@ m4+definitions(['
    //  x13 (a3): 1..10
    //  x14 (a4): Sum
    // 
-   m4_asm(ADDI, x14, x0, 0)             // Initialize sum register x14 with 0
+   m4_asm(ADDI, x14, x0, 1)             // Initialize sum register x14 with 0, changing to 1 has no effect in makerchip
    m4_asm(ADDI, x12, x0, 1010)          // Store count of 10 in register x12.
    m4_asm(ADDI, x13, x0, 1)             // Initialize loop count register x13 with 0
    // Loop:
