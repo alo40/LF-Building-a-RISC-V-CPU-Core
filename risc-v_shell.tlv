@@ -88,12 +88,17 @@
                 $is_j_instr ? { {12{$instr[31]}}, $instr[19:12], $instr[20], $instr[30:21], 1'b0 } : 
                 32'b0;
    
-   // Decoder, instruction valid?
-   $rd_valid = $is_r_instr || $is_i_instr || $is_u_instr || $is_j_instr;
-   $funct3_valid = $is_r_instr || $is_i_instr || $is_s_instr || $is_b_instr;
-   $rs1_valid = $is_r_instr || $is_i_instr || $is_s_instr || $is_b_instr;
-   $rs2_valid = $is_r_instr || $is_s_instr || $is_b_instr;
-   $imm_valid = $is_i_instr || $is_s_instr || $is_b_instr || $is_u_instr || $is_j_instr;
+   // Decoder, determine specific instructions
+   $funct3[2:0] = $fuct3_valid ? $instr[14:12] : 3'b0;
+   $opcode[6:0] = $instr[6:0];
+   $dec_bits[10:0] = {$instr[30], $funct3, $opcode}; // concatenate relevant fields
+   $is_beq = $dec_bits ==? 11'bx_000_1100011;
+   $is_bne = $dec_bits ==? 11'bx_001_1100011;
+   $is_blt = $dec_bits ==? 11'bx_100_1100011;
+   $is_bge = $dec_bits ==? 11'bx_101_1100011;
+   $is_bltu = $dec_bits ==? 11'bx_110_1100011;
+   $is_bgeu = $dec_bits ==? 11'bx_111_1100011;
+   $is_addi = $dec_bits ==? 11'bx_000_0010011;
    
    // Supress LOG warnings
    `BOGUS_USE($rd $rd_valid $rs1 $rs1_valid $rs2 $rs2_valid $funct3 $funct3_valid $imm_valid)
