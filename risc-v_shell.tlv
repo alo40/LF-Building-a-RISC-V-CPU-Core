@@ -99,9 +99,11 @@
    $is_bltu = $dec_bits ==? 11'bx_110_1100011;
    $is_bgeu = $dec_bits ==? 11'bx_111_1100011;
    $is_addi = $dec_bits ==? 11'bx_000_0010011;
+   $is_add = $dec_bits ==? 11'b0_000_0110011;
    
    // Supress LOG warnings
-   `BOGUS_USE($rd $rd_valid $rs1 $rs1_valid $rs2 $rs2_valid $funct3 $funct3_valid $imm_valid)
+   `BOGUS_USE($rd $rd_valid $rs1 $rs1_valid $rs2 $rs2_valid $funct3 $funct3_valid $imm_valid
+              $is_beq $is_bne $is_blt $is_bge $is_bltu $is_bgeu $is_addi $is_add)
    
    // Assert these to end simulation (before Makerchip cycle limit).
    *passed = 1'b0;
