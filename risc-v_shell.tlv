@@ -19,8 +19,9 @@
    //  x12 (a2): 10
    //  x13 (a3): 1..10
    //  x14 (a4): Sum
-   // 
+   //                 
    m4_asm(ADDI, x14, x0, 0)             // Initialize sum register a4 with 0
+   m4_asm(ADDI, x0, x0, 1010)          // Store count of 10 in register 0.
    m4_asm(ADDI, x12, x0, 1010)          // Store count of 10 in register a2.
    m4_asm(ADDI, x13, x0, 1)             // Initialize loop count register a3 with 0
    // Loop:
@@ -48,6 +49,7 @@
    
    // Instruction Memory
    `READONLY_MEM($pc, $$instr[31:0]) // instantiation
+   //$instr[31:0] = 32'b_0000_0000_0001_0000_0000_0111_0001_0011; // test
    
    // Decoder, opcode[6:2]
    //$is_x_instr = $instr[1:0] == 2'b11; // is always true (in this course)
@@ -74,7 +76,8 @@
    $rs2[4:0] = $instr[24:20];
    
    // Decoder, instruction valid?
-   $rd_valid = $is_r_instr || $is_i_instr || $is_u_instr || $is_j_instr;
+   $is_rd_zero = $instr[11:7] == 0; // to avoid write in register file x0
+   $rd_valid = {$is_r_instr || $is_i_instr || $is_u_instr || $is_j_instr} && ~$is_rd_zero;
    $funct3_valid = $is_r_instr || $is_i_instr || $is_s_instr || $is_b_instr;
    $rs1_valid = $is_r_instr || $is_i_instr || $is_s_instr || $is_b_instr;
    $rs2_valid = $is_r_instr || $is_s_instr || $is_b_instr;
@@ -114,8 +117,7 @@
    *passed = 1'b0;
    *failed = *cyc_cnt > M4_MAX_CYC;
    
-   m4+rf(  32, 32, $reset, $rd_valid, $rd[4:0],       $result[31:0], $rs1_valid, $rs1[4:0],       $src1_value, $rs2_valid, $rs2[4:0],       $src2_value)
-   //m4+rf(32, 32, $reset, $wr_en,    $wr_index[4:0], $wr_data[31:0], $rd1_en,    $rd1_index[4:0], $rd1_data,   $rd2_en,    $rd2_index[4:0], $rd2_data)
+   m4+rf(32, 32, $reset,$rd_valid, $rd[4:0], $result[31:0], $rs1_valid, $rs1[4:0], $src1_value, $rs2_valid, $rs2[4:0], $src2_value)
    //m4+dmem(32, 32, $reset, $addr[4:0], $wr_en, $wr_data[31:0], $rd_en, $rd_data)
    m4+cpu_viz()
 \SV
