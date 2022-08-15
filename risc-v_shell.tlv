@@ -21,7 +21,7 @@
    //  x14 (a4): Sum
    //                 
    m4_asm(ADDI, x14, x0, 0)             // Initialize sum register a4 with 0
-   m4_asm(ADDI, x0, x0, 1010)          // Store count of 10 in register 0.
+   //m4_asm(ADDI, x0, x0, 1010)          // Store count of 10 in register 0. (invalid operation)
    m4_asm(ADDI, x12, x0, 1010)          // Store count of 10 in register a2.
    m4_asm(ADDI, x13, x0, 1)             // Initialize loop count register a3 with 0
    // Loop:
@@ -92,7 +92,7 @@
                 32'b0;
    
    // Decoder, determine specific instructions
-   $funct3[2:0] = $fuct3_valid ? $instr[14:12] : 3'b0;
+   $funct3[2:0] = $funct3_valid ? $instr[14:12] : 3'b0;
    $opcode[6:0] = $instr[6:0];
    $dec_bits[10:0] = {$instr[30], $funct3, $opcode}; // concatenate relevant fields
    $is_beq = $dec_bits ==? 11'bx_000_1100011;
@@ -108,6 +108,17 @@
    $result[31:0] = $is_addi ? $src1_value + $imm : 
                    $is_add  ? $src1_value + $src2_value : 
                    32'b0;
+   
+   // Branch Logic
+   $taken_br = { $is_beq && {$src1_value == $src2_value} } || 
+               { $is_bne && {$src1_value != $src2_value} } || 
+               { $is_blt && {($src1_value < $src2_value) ^ ($src1_value[31] != $src2_value[31])} } || 
+               { $is_bge && {($src1_value >= $src2_value) ^ ($src1_value[31] != $src2_value[31])} } || 
+               { $is_bltu && {$src1_value < $src2_value} } || 
+               { $is_bgeu && {$src1_value >= $src2_value} } || 
+               1'b0;
+   //{ $is_bne && {$src1_value != $src2_value} } || 
+   //|| $is_bne || $is_blt || $is_bge || $is_bltu || $is_bgeu ;
    
    // Supress LOG warnings
    `BOGUS_USE($rd $rd_valid $rs1 $rs1_valid $rs2 $rs2_valid $funct3 $funct3_valid $imm_valid
