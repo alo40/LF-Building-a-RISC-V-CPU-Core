@@ -117,8 +117,12 @@
                { $is_bltu && {$src1_value < $src2_value} } || 
                { $is_bgeu && {$src1_value >= $src2_value} } || 
                1'b0;
-   //{ $is_bne && {$src1_value != $src2_value} } || 
-   //|| $is_bne || $is_blt || $is_bge || $is_bltu || $is_bgeu ;
+   
+   // target PC of the branch instruction
+   $br_tgt_pc[31:0] = $pc + $imm;
+   $next_pc[31:0] = $taken_br ? $br_tgt_pc[31:0] : $next_pc;
+   
+   //$pc[31:0] = $taken_br ? >>1$br_tgt_pc : $pc;
    
    // Supress LOG warnings
    `BOGUS_USE($rd $rd_valid $rs1 $rs1_valid $rs2 $rs2_valid $funct3 $funct3_valid $imm_valid
