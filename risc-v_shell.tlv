@@ -61,7 +61,7 @@
                  $instr[6:2] == 5'b00110 || 
                  $instr[6:2] == 5'b11001;
    $is_s_instr = $instr[6:2] == 5'b01000 || 
-                 $instr[6:2] == 5'b01001;
+                 $instr[6:2] == 5'b01001; // instructions SB, SH, SW 
    $is_r_instr = $instr[6:2] == 5'b01011 || 
                  $instr[6:2] == 5'b01100 || 
                  $instr[6:2] == 5'b01110 || 
@@ -128,8 +128,20 @@
    $is_sra = $dec_bits ==? 11'b1_101_0110011;
    $is_or = $dec_bits ==? 11'b0_110_0110011;
    $is_and = $dec_bits ==? 11'b0_111_0110011;
+   $is_load = $dec_bits ==? 11'bx_xxx_0000011; // instructions LB, LH, LW, LBU, LHU
    
-   // Arithmetic Logic Unit
+   // Subexpressions needed by the ALU
+   // SLTU and SLTI (set of less than, unsigned) results:
+   $sltu_rslt[31:0] = {31'b0, $src1_value < $src2_value};
+   $sltiu_rslt[31:0] = {31'b0, $src1_value < $imm};
+   // SRA and SRAI (shift right, arithmetic) results:
+   // sign-extended src1
+   $sext_src1[63:0] = { {32{$src1_value[31]}}, $src1_value };
+   // 64-bit sign-extended results, to be truncated
+   $sra_rslt[63:0] = $sext_src1 >> $src2_value[4:0];
+   $srai_rslt[63:0] = $sext_src1 >> $imm[4:0];
+   
+   // Arithmetic Logic Unit (ALU)
    $result[31:0] = $is_addi ? $src1_value + $imm : 
                    $is_add  ? $src1_value + $src2_value : 
                    32'b0;
