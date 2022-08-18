@@ -122,14 +122,13 @@
    $br_tgt_pc[31:0] = $pc + $imm;
    $next_pc[31:0] = $taken_br ? $br_tgt_pc[31:0] : $next_pc;
    
-   //$pc[31:0] = $taken_br ? >>1$br_tgt_pc : $pc;
-   
    // Supress LOG warnings
    `BOGUS_USE($rd $rd_valid $rs1 $rs1_valid $rs2 $rs2_valid $funct3 $funct3_valid $imm_valid
               $is_beq $is_bne $is_blt $is_bge $is_bltu $is_bgeu $is_addi $is_add)
    
    // Assert these to end simulation (before Makerchip cycle limit).
-   *passed = 1'b0;
+   //*passed = 1'b0;
+   m4+tb()
    *failed = *cyc_cnt > M4_MAX_CYC;
    
    m4+rf(32, 32, $reset,$rd_valid, $rd[4:0], $result[31:0], $rs1_valid, $rs1[4:0], $src1_value, $rs2_valid, $rs2[4:0], $src2_value)
