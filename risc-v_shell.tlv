@@ -181,9 +181,13 @@
                { $is_bgeu && {$src1_value >= $src2_value} } || 
                1'b0;
    
-   // target PC of the branch instruction
+   // target PC of the branch/jump instruction
    $br_tgt_pc[31:0] = $pc + $imm;
-   $next_pc[31:0] = $taken_br ? $br_tgt_pc[31:0] : $next_pc;
+   $jalr_tgt_pc[31:0] = $src1_value + $imm;
+   $next_pc[31:0] = $taken_br ? $br_tgt_pc[31:0] :  // branch inst
+                    $is_jal ? $br_tgt_pc[31:0] :  // jump inst
+                    $is_jalr ? $jalr_tgt_pc[31:0] :  // jump inst
+                    $next_pc;
    
    // Supress LOG warnings
    `BOGUS_USE($rd $rd_valid $rs1 $rs1_valid $rs2 $rs2_valid $funct3 $funct3_valid $imm_valid
