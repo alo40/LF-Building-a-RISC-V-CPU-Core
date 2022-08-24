@@ -141,6 +141,9 @@
    $sra_rslt[63:0] = $sext_src1 >> $src2_value[4:0];
    $srai_rslt[63:0] = $sext_src1 >> $imm[4:0];
    
+   // Address Logic
+   $addr[31:0] = {27'b0, $rs1} + $imm;
+   
    // Arithmetic Logic Unit (ALU)
    $result[31:0] = $is_addi ? $src1_value + $imm : 
                    $is_add  ? $src1_value + $src2_value : 
@@ -170,6 +173,8 @@
                                    {31'b0, $src1_value[31]} ) : 
                    $is_sra ? $sra_rslt[31:0] : 
                    $is_srai ? $srai_rslt[31:0] : 
+                   $is_load ? $addr : 
+                   $is_s_instr ? $addr : 
                    32'b0;
    
    // Branch Logic
@@ -199,7 +204,8 @@
    *failed = *cyc_cnt > M4_MAX_CYC;
    
    m4+rf(32, 32, $reset,$rd_valid, $rd[4:0], $result[31:0], $rs1_valid, $rs1[4:0], $src1_value, $rs2_valid, $rs2[4:0], $src2_value)
-   //m4+dmem(32, 32, $reset, $addr[4:0], $wr_en, $wr_data[31:0], $rd_en, $rd_data)
+   m4+dmem(  32, 32, $reset, $addr[4:0], $is_s_instr, $src2_value, $is_load, $ld_data)
+   //m4+dmem(32, 32, $reset, $addr[4:0], $wr_en,      $wr_data[31:0], $rd_en,   $rd_data)
    m4+cpu_viz()
 \SV
    endmodule
