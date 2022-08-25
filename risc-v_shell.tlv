@@ -142,7 +142,7 @@
    $srai_rslt[63:0] = $sext_src1 >> $imm[4:0];
    
    // Address Logic
-   $addr[31:0] = {27'b0, $rs1} + $imm;
+   $addr[31:0] = $src1_value + $imm; // in tutorial this value is written as "addr = rs1 + imm"
    
    // Arithmetic Logic Unit (ALU)
    $result[31:0] = $is_addi ? $src1_value + $imm : 
@@ -207,7 +207,7 @@
    *failed = *cyc_cnt > M4_MAX_CYC;
    
    m4+rf(32, 32, $reset, $rd_valid, $rd[4:0], $mux_result[31:0], $rs1_valid, $rs1[4:0], $src1_value, $rs2_valid, $rs2[4:0], $src2_value)
-   m4+dmem(  32, 32, $reset, $result[4:0], $is_s_instr, $src2_value,    $is_load, $ld_data)
+   m4+dmem(  32, 32, $reset, $rs1, $is_s_instr, $src2_value,    $is_load, $ld_data)
    //m4+dmem(32, 32, $reset, $addr[4:0],   $wr_en,      $wr_data[31:0], $rd_en,   $rd_data)
    m4+cpu_viz()
 \SV
