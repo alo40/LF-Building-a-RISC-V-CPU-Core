@@ -85,7 +85,7 @@
    
    // Decoder, immediate fields (produced by the instructions)
    $imm[31:0] = $is_i_instr ? { {21{$instr[31]}}, $instr[30:20] } : 
-                $is_s_instr ? { {21{$instr[31]}}, $instr[30:25], $inst[11:7] } : 
+                $is_s_instr ? { {21{$instr[31]}}, $instr[30:25], $instr[11:7] } : 
                 $is_b_instr ? { {20{$instr[31]}}, $instr[7], $instr[30:25], $instr[11:8], 1'b0 } : 
                 $is_u_instr ? { $instr[31:12], 12'b0 } : 
                 $is_j_instr ? { {12{$instr[31]}}, $instr[19:12], $instr[20], $instr[30:21], 1'b0 } : 
@@ -194,6 +194,9 @@
                     $is_jalr ? $jalr_tgt_pc[31:0] :  // jump inst
                     $next_pc;
    
+   // last multiplexer
+   $mux_result[31:0] = $is_load ? $ld_data : $result; 
+   
    // Supress LOG warnings
    `BOGUS_USE($rd $rd_valid $rs1 $rs1_valid $rs2 $rs2_valid $funct3 $funct3_valid $imm_valid
               $is_beq $is_bne $is_blt $is_bge $is_bltu $is_bgeu $is_addi $is_add)
@@ -203,9 +206,9 @@
    m4+tb()
    *failed = *cyc_cnt > M4_MAX_CYC;
    
-   m4+rf(32, 32, $reset,$rd_valid, $rd[4:0], $result[31:0], $rs1_valid, $rs1[4:0], $src1_value, $rs2_valid, $rs2[4:0], $src2_value)
-   m4+dmem(  32, 32, $reset, $addr[4:0], $is_s_instr, $src2_value, $is_load, $ld_data)
-   //m4+dmem(32, 32, $reset, $addr[4:0], $wr_en,      $wr_data[31:0], $rd_en,   $rd_data)
+   m4+rf(32, 32, $reset, $rd_valid, $rd[4:0], $mux_result[31:0], $rs1_valid, $rs1[4:0], $src1_value, $rs2_valid, $rs2[4:0], $src2_value)
+   m4+dmem(  32, 32, $reset, $result[4:0], $is_s_instr, $src2_value,    $is_load, $ld_data)
+   //m4+dmem(32, 32, $reset, $addr[4:0],   $wr_en,      $wr_data[31:0], $rd_en,   $rd_data)
    m4+cpu_viz()
 \SV
    endmodule
